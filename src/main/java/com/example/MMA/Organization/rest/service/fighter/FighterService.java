@@ -1,6 +1,8 @@
 package com.example.MMA.Organization.rest.service.fighter;
 
+import com.example.MMA.Organization.persistence.entity.division.Division;
 import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
+import com.example.MMA.Organization.persistence.repository.division.DivisionRepository;
 import com.example.MMA.Organization.persistence.repository.fighter.FighterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,14 +12,16 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+
 @Service
 public class FighterService {
 
     private final FighterRepository fighterRepository;
-
+    private final DivisionRepository divisionRepository;
     @Autowired
-    public FighterService(FighterRepository fighterRepository) {
+    public FighterService(FighterRepository fighterRepository, DivisionRepository divisionRepository) {
         this.fighterRepository = fighterRepository;
+        this.divisionRepository = divisionRepository;
     }
 
     public List<Fighter> getAllFighters(){
@@ -28,9 +32,24 @@ public class FighterService {
         fighterRepository.save(fighterToAdd);
     }
 
-    public void deleteFighter(Long fighterId){
-        fighterRepository.deleteById(fighterId);
+    @Transactional
+    public void addFighterToDivision(Long divisionId,Long fighterId){
+        boolean divisionExists = divisionRepository.existsById(divisionId);
+        boolean fighterExists = fighterRepository.existsById(fighterId);
+        if(divisionExists && fighterExists){
+            Division chosenDivision = divisionRepository.findById(divisionId).get();
+            Fighter chosenFighter = fighterRepository.findById(fighterId).get();
+            chosenFighter.assignDivision(chosenDivision);
+        }
     }
+
+    public void deleteFighter(Long fighterId){
+        boolean fighterExists = fighterRepository.existsById(fighterId);
+        if(fighterExists){
+            fighterRepository.deleteById(fighterId);
+        }
+    }
+
 
     @Transactional
     public void updateFighter(Long fighterId,

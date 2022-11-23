@@ -29,13 +29,21 @@ public class FighterController {
         fighterService.addNewFighter(fighterToAdd);
     }
 
-    @DeleteMapping(path = "{fighterId}")
+    @PutMapping(path = "/{fighterId}/division/{divisionId}")
+    public void addFighterToDivision(
+            @PathVariable Long divisionId,
+            @PathVariable Long fighterId
+    ) {
+        fighterService.addFighterToDivision(divisionId,fighterId);
+    }
+
+    @DeleteMapping(path = "/{fighterId}")
     public void deleteFighter(@PathVariable("fighterId") Long fighterId){
         fighterService.deleteFighter(fighterId);
 
     }
 
-    @PutMapping(path = "{fighterId}")
+    @PutMapping(path = "/{fighterId}")
     public void updateFighter(@PathVariable("fighterId") Long fighterId,
                               @RequestParam (required = false) String newName,
                               @RequestParam (required = false) String newSurname,

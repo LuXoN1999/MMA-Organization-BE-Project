@@ -1,11 +1,14 @@
 package com.example.MMA.Organization.rest.controller.division;
 
 import com.example.MMA.Organization.persistence.entity.division.Division;
+import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
 import com.example.MMA.Organization.rest.service.division.DivisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
+
 
 
 @RestController
@@ -18,13 +21,18 @@ public class DivisionController {
         this.divisionService = divisionService;
     }
 
-    @GetMapping
-    public List<Division> getAllDivisions(){ return divisionService.getAllDivisions(); }
-
     @PostMapping
     public void addNewDivision(@RequestBody Division division) { divisionService.addNewDivision(division); }
 
-    @DeleteMapping(path = "{divisionId}")
+    @GetMapping
+    public List<Division> getAllDivisions(){ return divisionService.getAllDivisions(); }
+
+    @GetMapping(path = "/fighters/{divisionId}")
+    public List<Fighter> getAllFightersInDivision(@PathVariable Long divisionId){
+        return divisionService.getAllFightersInDivision(divisionId);
+    }
+
+    @DeleteMapping(path = "/{divisionId}")
     public void deleteDivision(@PathVariable("divisionId") Long divisionId){
         divisionService.deleteDivision(divisionId);
     }

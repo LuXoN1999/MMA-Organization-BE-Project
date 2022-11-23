@@ -1,5 +1,7 @@
 package com.example.MMA.Organization.persistence.entity.fighter;
 
+import com.example.MMA.Organization.persistence.entity.division.Division;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -7,7 +9,7 @@ import java.time.LocalDate;
 @Table(name = "fighter")
 public class Fighter {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String surname;
@@ -17,8 +19,27 @@ public class Fighter {
     private Double weightInKg;
     private Double heightInCm;
 
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "divisionId",referencedColumnName = "id")
+    private Division division;
+
     public Fighter(){
 
+    }
+
+    @Override
+    public String toString() {
+        return "Fighter{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", nationality='" + nationality + '\'' +
+                ", weightInKg=" + weightInKg +
+                ", heightInCm=" + heightInCm +
+                '}';
     }
 
     public Fighter(Long id, String name, String surname, String nickname, LocalDate dateOfBirth, String nationality, Double weightInKg, Double heightInCm) {
@@ -101,4 +122,15 @@ public class Fighter {
     public void setHeightInCm(Double heightInCm) {
         this.heightInCm = heightInCm;
     }
+
+    public Division getDivision() {
+        return division;
+    }
+
+    public void assignDivision(Division division){
+        this.division = division;
+    }
+
+    public void leaveDivision(){ this.division = null; }
+
 }

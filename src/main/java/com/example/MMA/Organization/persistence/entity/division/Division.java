@@ -1,16 +1,25 @@
 package com.example.MMA.Organization.persistence.entity.division;
 
+import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
+
 @Entity
 @Table(name = "division")
 public class Division {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Double minWeightInKg;
     private Double maxWeightInKg;
     private Integer maxNumberOfFighters = 15;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "division",fetch=FetchType.EAGER)
+    private List<Fighter> fighters;
 
 
     public Division(){
@@ -43,6 +52,10 @@ public class Division {
         this.name = name;
         this.minWeightInKg = minWeightInKg;
         this.maxWeightInKg = maxWeightInKg;
+    }
+
+    public void addFighter(Fighter fighter){
+        fighters.add(fighter);
     }
 
     public Long getId() { return id;}
@@ -79,5 +92,9 @@ public class Division {
 
     public void setMaxNumberOfFighters(Integer maxNumberOfFighters) {
         this.maxNumberOfFighters = maxNumberOfFighters;
+    }
+
+    public List<Fighter> getFighters() {
+        return fighters;
     }
 }
