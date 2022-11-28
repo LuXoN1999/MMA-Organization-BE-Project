@@ -2,6 +2,7 @@ package com.example.MMA.Organization.rest.controller.division;
 
 import com.example.MMA.Organization.persistence.entity.division.Division;
 import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
+import com.example.MMA.Organization.rest.dto.division.DivisionDTO;
 import com.example.MMA.Organization.rest.service.division.DivisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,10 @@ public class DivisionController {
     }
 
     @PostMapping
-    public void addNewDivision(@RequestBody Division division) { divisionService.addNewDivision(division); }
+    public String addNewDivision(@RequestBody Division division) { return divisionService.addNewDivision(division); }
 
     @GetMapping
-    public List<Division> getAllDivisions(){ return divisionService.getAllDivisions(); }
+    public List<DivisionDTO> getAllDivisions(){ return divisionService.getAllDivisions(); }
 
     @GetMapping(path = "/fighters/{divisionId}")
     public List<Fighter> getAllFightersInDivision(@PathVariable Long divisionId){
@@ -33,17 +34,17 @@ public class DivisionController {
     }
 
     @DeleteMapping(path = "/{divisionId}")
-    public void deleteDivision(@PathVariable("divisionId") Long divisionId){
-        divisionService.deleteDivision(divisionId);
+    public String deleteDivision(@PathVariable("divisionId") Long divisionId){
+        return divisionService.deleteDivision(divisionId);
     }
 
-    @PutMapping(path = "{divisionId}")
-    public void updateDivision(@PathVariable("divisionId") Long divisionId,
+    @PutMapping(path = "/{divisionId}")
+    public String updateDivision(@PathVariable("divisionId") Long divisionId,
                              @RequestParam (required = false) String newName,
                              @RequestParam (required = false) Double newMinWeight,
                              @RequestParam (required = false) Double newMaxWeight,
                              @RequestParam (required = false) Integer newMaxNumberOfFighters){
-        divisionService.updateDivision(divisionId,newName,newMinWeight,newMaxWeight,newMaxNumberOfFighters);
+        return divisionService.updateDivision(divisionId,newName,newMinWeight,newMaxWeight,newMaxNumberOfFighters);
     }
 
 

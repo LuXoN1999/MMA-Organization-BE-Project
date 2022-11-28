@@ -1,6 +1,7 @@
 package com.example.MMA.Organization.persistence.entity.fighter;
 
 import com.example.MMA.Organization.persistence.entity.division.Division;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,8 +19,6 @@ public class Fighter {
     private String nationality;
     private Double weightInKg;
     private Double heightInCm;
-
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "divisionId",referencedColumnName = "id")
     private Division division;
@@ -28,21 +27,14 @@ public class Fighter {
 
     }
 
-    @Override
-    public String toString() {
-        return "Fighter{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", nationality='" + nationality + '\'' +
-                ", weightInKg=" + weightInKg +
-                ", heightInCm=" + heightInCm +
-                '}';
-    }
-
-    public Fighter(Long id, String name, String surname, String nickname, LocalDate dateOfBirth, String nationality, Double weightInKg, Double heightInCm) {
+    public Fighter(Long id,
+                   @NonNull String name,
+                   @NonNull String surname,
+                   @NonNull String nickname,
+                   @NonNull LocalDate dateOfBirth,
+                   @NonNull String nationality,
+                   @NonNull Double weightInKg,
+                   @NonNull Double heightInCm) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -53,7 +45,13 @@ public class Fighter {
         this.heightInCm = heightInCm;
     }
 
-    public Fighter(String name, String surname, String nickname, LocalDate dateOfBirth, String nationality, Double weightInKg, Double heightInCm) {
+    public Fighter(@NonNull String name,
+                   @NonNull String surname,
+                   @NonNull String nickname,
+                   @NonNull LocalDate dateOfBirth,
+                   @NonNull String nationality,
+                   @NonNull Double weightInKg,
+                   @NonNull Double heightInCm) {
         this.name = name;
         this.surname = surname;
         this.nickname = nickname;

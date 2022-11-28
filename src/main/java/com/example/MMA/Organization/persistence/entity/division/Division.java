@@ -2,6 +2,7 @@ package com.example.MMA.Organization.persistence.entity.division;
 
 import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,9 +13,13 @@ public class Division {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private Double minWeightInKg;
+
     private Double maxWeightInKg;
+
     private Integer maxNumberOfFighters = 15;
 
     @JsonIgnore
@@ -26,7 +31,12 @@ public class Division {
 
     }
 
-    public Division(Long id, String name, Double minWeight, Double maxWeight, Integer maxNumberOfFighters){
+
+    public Division(Long id,
+                    @NonNull String name,
+                    @NonNull Double minWeight,
+                    @NonNull Double maxWeight,
+                    @NonNull Integer maxNumberOfFighters){
         this.id = id;
         this.name = name;
         this.minWeightInKg = minWeight;
@@ -34,21 +44,24 @@ public class Division {
         this.maxNumberOfFighters = maxNumberOfFighters;
     }
 
-    public Division(String name, Double minWeight, Double maxWeight, Integer maxNumberOfFighters){
+    public Division(@NonNull String name,
+                    @NonNull Double minWeight,
+                    @NonNull Double maxWeight,
+                    @NonNull Integer maxNumberOfFighters){
         this.name = name;
         this.minWeightInKg = minWeight;
         this.maxWeightInKg = maxWeight;
         this.maxNumberOfFighters = maxNumberOfFighters;
     }
 
-    public Division(Long id, String name, Double minWeightInKg, Double maxWeightInKg) {
+    public Division(Long id, @NonNull String name, @NonNull Double minWeightInKg, @NonNull Double maxWeightInKg) {
         this.id = id;
         this.name = name;
         this.minWeightInKg = minWeightInKg;
         this.maxWeightInKg = maxWeightInKg;
     }
 
-    public Division(String name, Double minWeightInKg, Double maxWeightInKg) {
+    public Division(@NonNull String name, @NonNull Double minWeightInKg, @NonNull Double maxWeightInKg) {
         this.name = name;
         this.minWeightInKg = minWeightInKg;
         this.maxWeightInKg = maxWeightInKg;
@@ -97,4 +110,17 @@ public class Division {
     public List<Fighter> getFighters() {
         return fighters;
     }
+
+    @Override
+    public String toString() {
+        return "{\n" +
+                "\tid= " + id +
+                ",\n\tname= '" + name + '\'' +
+                ",\n\tminWeightInKg= " + minWeightInKg +
+                ",\n\tmaxWeightInKg= " + maxWeightInKg +
+                ",\n\tmaxNumberOfFighters= " + maxNumberOfFighters +
+                "\n}";
+    }
+
+
 }
