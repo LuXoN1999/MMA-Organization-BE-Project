@@ -28,7 +28,7 @@ public class DivisionService {
 
     public String addNewDivision(Division divisionToAdd){
         divisionRepository.save(divisionToAdd);
-        return "Division added:\n " + divisionToAdd;
+        return "Division successfully added:\n " + divisionToAdd;
     }
 
     public List<DivisionDTO> getAllDivisions() {
@@ -38,7 +38,7 @@ public class DivisionService {
                 .collect(Collectors.toList());
     }
 
-
+    
     public List<Fighter> getAllFightersInDivision(Long divisionId){
         boolean divisionExists = divisionRepository.existsById(divisionId);
         if(divisionExists){

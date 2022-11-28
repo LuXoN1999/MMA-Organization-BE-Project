@@ -131,4 +131,18 @@ public class Fighter {
 
     public void leaveDivision(){ this.division = null; }
 
+    @Override
+    public String toString() {
+        return "{\n" +
+                "\tid=" + id +
+                ",\n\t name='" + name + '\'' +
+                ",\n\t surname='" + surname + '\'' +
+                ",\n\t nickname='" + nickname + '\'' +
+                ",\n\t dateOfBirth=" + dateOfBirth +
+                ",\n\t nationality='" + nationality + '\'' +
+                ",\n\t weightInKg=" + weightInKg +
+                ",\n\t heightInCm=" + heightInCm +
+                ",\n\t division=" + division +
+                "\n}";
+    }
 }
