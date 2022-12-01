@@ -21,7 +21,7 @@ public class FighterService {
 
     private final FighterRepository fighterRepository;
     private final DivisionRepository divisionRepository;
-    private FighterMapperImpl fighterMapper;
+    private final FighterMapperImpl fighterMapper;
 
     @Autowired
     public FighterService(FighterRepository fighterRepository, DivisionRepository divisionRepository, FighterMapperImpl fighterMapper) {

@@ -9,7 +9,6 @@ public class FighterDTO {
     private String nickname;
     private Double weightInKg;
     private Double heightInCm;
-
     private Division division;
 
     public Long getId() {
