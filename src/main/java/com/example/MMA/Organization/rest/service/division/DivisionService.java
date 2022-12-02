@@ -1,6 +1,7 @@
 package com.example.MMA.Organization.rest.service.division;
 
 import com.example.MMA.Organization.common.DivisionChecker;
+import com.example.MMA.Organization.common.InputChecker;
 import com.example.MMA.Organization.persistence.entity.division.Division;
 import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
 import com.example.MMA.Organization.persistence.repository.division.DivisionRepository;
@@ -30,14 +31,25 @@ public class DivisionService {
 
     public String addNewDivision(Division divisionToAdd){
         if(!DivisionChecker.nameIsValid(divisionToAdd.getName())){
-            return "Invalid division name! Please make sure that division name is longer than 3 characters and isn't numeric only!";
+            return "Invalid division name. Please make sure that division name is longer than 3 characters and isn't numeric only.";
         }
         if(!DivisionChecker.weightsAreValid(divisionToAdd.getMinWeight(),divisionToAdd.getMaxWeight())){
-            return "Invalid weight input! Please make sure the weight inputs make sense!";
+            return "Invalid weight input. Please make sure the weight inputs make sense.";
         }
         if(!DivisionChecker.maxNumberOfFightersIsValid(divisionToAdd.getMaxNumberOfFighters())){
-            return "Invalid max. number of fighters input! Please make sure the max. number of fighters input makes sense!";
+            return "Invalid max. number of fighters input. Please make sure the max. number of fighters input makes sense.";
         }
+
+        if(InputChecker.divisionNameIsTaken(divisionToAdd,divisionRepository.findAll())){
+            return "Name " + divisionToAdd.getName() + " is already taken. Please try with a different name.";
+        }
+        Division divisionWithMatchedWeight = InputChecker.weightRangeOverlapped(divisionToAdd,divisionRepository.findAll());
+        if(divisionWithMatchedWeight != null){
+            return "Division weight range matches weight range of a different division. Please adjust your division weight range." +
+                    "\nWeight range of the matched division("+ divisionWithMatchedWeight.getName() + "): " +
+                    "[" + divisionWithMatchedWeight.getMinWeight() + ", " + divisionWithMatchedWeight.getMaxWeight() + "]kg.";
+        }
+
         divisionRepository.save(divisionToAdd);
         return "Division successfully added:\n " + divisionToAdd;
     }
