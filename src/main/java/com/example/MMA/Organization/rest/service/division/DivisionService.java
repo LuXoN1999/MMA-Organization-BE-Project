@@ -29,29 +29,35 @@ public class DivisionService {
     }
 
 
-    public String addNewDivision(Division divisionToAdd){
+    public StringBuilder addNewDivision(Division divisionToAdd){
+        StringBuilder errorResponse = new StringBuilder();
         if(!DivisionChecker.nameIsValid(divisionToAdd.getName())){
-            return "Invalid division name. Please make sure that division name is longer than 3 characters and isn't numeric only.";
+            errorResponse.append("ERROR: Invalid division name. Please make sure that division name is longer than 3 characters and isn't numeric only.\n");
         }
-        if(!DivisionChecker.weightsAreValid(divisionToAdd.getMinWeight(),divisionToAdd.getMaxWeight())){
-            return "Invalid weight input. Please make sure the weight inputs make sense.";
-        }
-        if(!DivisionChecker.maxNumberOfFightersIsValid(divisionToAdd.getMaxNumberOfFighters())){
-            return "Invalid max. number of fighters input. Please make sure the max. number of fighters input makes sense.";
-        }
-
         if(InputChecker.divisionNameIsTaken(divisionToAdd,divisionRepository.findAll())){
-            return "Name " + divisionToAdd.getName() + " is already taken. Please try with a different name.";
-        }
-        Division divisionWithMatchedWeight = InputChecker.weightRangeOverlapped(divisionToAdd,divisionRepository.findAll());
-        if(divisionWithMatchedWeight != null){
-            return "Division weight range matches weight range of a different division. Please adjust your division weight range." +
-                    "\nWeight range of the matched division("+ divisionWithMatchedWeight.getName() + "): " +
-                    "[" + divisionWithMatchedWeight.getMinWeight() + ", " + divisionWithMatchedWeight.getMaxWeight() + "]kg.";
+            errorResponse.append("PROBLEM: Name " + divisionToAdd.getName() + " is already taken. Please try with a different name.\n");
         }
 
+        if(DivisionChecker.weightsAreValid(divisionToAdd.getMinWeight(),divisionToAdd.getMaxWeight())){
+            Division divisionWithMatchedWeight = InputChecker.weightRangeOverlapped(divisionToAdd,divisionRepository.findAll());
+            if(divisionWithMatchedWeight != null){
+                errorResponse.append("PROBLEM: Division weight range matches weight range of a different division. Please adjust your division weight range." +
+                        "\n\tWeight range of the matched division("+ divisionWithMatchedWeight.getName() + "): " +
+                        "[" + divisionWithMatchedWeight.getMinWeight() + ", " + divisionWithMatchedWeight.getMaxWeight() + "]kg.\n");
+            }
+        }
+        else{
+            errorResponse.append("ERROR: Invalid weight input. Please make sure the weight inputs make sense.\n");
+        }
+
+        if(!DivisionChecker.maxNumberOfFightersIsValid(divisionToAdd.getMaxNumberOfFighters())){
+            errorResponse.append("ERROR: Invalid max. number of fighters input. Please make sure the max. number of fighters input makes sense.\n");
+        }
+        if(errorResponse.length() != 0){
+            return errorResponse;
+        }
         divisionRepository.save(divisionToAdd);
-        return "Division successfully added:\n " + divisionToAdd;
+        return new StringBuilder("Division successfully added:\n " + divisionToAdd);
     }
 
     public List<DivisionDTO> getAllDivisions() {

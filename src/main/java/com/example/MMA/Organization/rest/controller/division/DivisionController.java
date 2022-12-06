@@ -23,7 +23,7 @@ public class DivisionController {
     }
 
     @PostMapping
-    public String addNewDivision(@RequestBody Division division) { return divisionService.addNewDivision(division); }
+    public StringBuilder addNewDivision(@RequestBody Division division) { return divisionService.addNewDivision(division); }
 
     @GetMapping
     public List<DivisionDTO> getAllDivisions(){ return divisionService.getAllDivisions(); }
