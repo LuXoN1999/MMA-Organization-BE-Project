@@ -88,10 +88,12 @@ public class DivisionService {
         boolean divisionExists = divisionRepository.existsById(divisionId);
         if(divisionExists){
             Division chosenDivision = divisionRepository.findById(divisionId).get();
+
             String oldName = chosenDivision.getName();
             Double oldMinWeight = chosenDivision.getMinWeight();
             Double oldMaxWeight = chosenDivision.getMaxWeight();
             Integer oldMaxNumberOfFighters = chosenDivision.getMaxNumberOfFighters();
+
             if(newName != null && newName.length() > 0 && !Objects.equals(chosenDivision.getName(),newName)){
                 chosenDivision.setName(newName);
             }
@@ -104,6 +106,7 @@ public class DivisionService {
             if(newMaxNumberOfFighters != null && newMaxNumberOfFighters >= 0) {
                 chosenDivision.setMaxNumberOfFighters(newMaxNumberOfFighters);
             }
+
             return "Division with id " + divisionId + " successfully updated.\n" +
                     "\tName: [" + oldName + "] -> [" + newName + "]\n" +
                     "\tMinWeight: [" + oldMinWeight + "] -> [" + newMinWeight + "]\n" +
