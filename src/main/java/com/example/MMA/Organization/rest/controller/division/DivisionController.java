@@ -39,7 +39,7 @@ public class DivisionController {
     }
 
     @PutMapping(path = "/{divisionId}")
-    public String updateDivision(@PathVariable("divisionId") Long divisionId,
+    public StringBuilder updateDivision(@PathVariable("divisionId") Long divisionId,
                              @RequestParam (required = false) String newName,
                              @RequestParam (required = false) Double newMinWeight,
                              @RequestParam (required = false) Double newMaxWeight,

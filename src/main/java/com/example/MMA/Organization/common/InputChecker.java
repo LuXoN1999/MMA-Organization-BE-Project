@@ -8,17 +8,17 @@ import java.util.Objects;
 
 public class InputChecker {
 
-    public static boolean divisionNameIsTaken(Division chosenDivision, List<Division> allDivisions){
+    public static boolean divisionNameIsTaken(String name, List<Division> allDivisions){
         for(Division element: allDivisions){
-            if(Objects.equals(element.getName(),chosenDivision.getName())){
+            if(Objects.equals(element.getName(),name)){
                 return true;
             }
         }
         return false;
     }
 
-    public static Division weightRangeOverlapped(Division chosenDivision, List<Division> allDivisions){
-        Range<Double> divisionWeightRange = Range.between(chosenDivision.getMinWeight(),chosenDivision.getMaxWeight());
+    public static Division weightRangeOverlapped(Double minWeight, Double maxWeight, List<Division> allDivisions){
+        Range<Double> divisionWeightRange = Range.between(minWeight,maxWeight);
         for(Division element: allDivisions){
             Range<Double> elementWeightRange = Range.between(element.getMinWeight(), element.getMaxWeight());
             if(divisionWeightRange.isOverlappedBy(elementWeightRange)){
