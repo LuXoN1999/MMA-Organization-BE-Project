@@ -1,6 +1,7 @@
 package com.example.MMA.Organization.common;
 
 import com.example.MMA.Organization.persistence.entity.division.Division;
+import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
 import org.apache.commons.lang3.Range;
 
 import java.util.List;
@@ -26,5 +27,14 @@ public class InputChecker {
             }
         }
         return null;
+    }
+
+    public static boolean fighterNicknameIsTaken(String nickname, List<Fighter> allFighters){
+        for(Fighter element : allFighters){
+            if(Objects.equals(element.getNickname(),nickname)){
+                return true;
+            }
+        }
+        return false;
     }
 }

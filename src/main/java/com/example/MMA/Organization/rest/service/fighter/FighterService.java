@@ -1,5 +1,7 @@
 package com.example.MMA.Organization.rest.service.fighter;
 
+import com.example.MMA.Organization.common.FighterChecker;
+import com.example.MMA.Organization.common.InputChecker;
 import com.example.MMA.Organization.persistence.entity.division.Division;
 import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
 import com.example.MMA.Organization.persistence.repository.division.DivisionRepository;
@@ -30,9 +32,40 @@ public class FighterService {
         this.fighterMapper = fighterMapper;
     }
 
-    public String addNewFighter(Fighter fighterToAdd){
+    public StringBuilder addNewFighter(Fighter fighterToAdd) {
+        List<Fighter> allFighters = fighterRepository.findAll();
+
+        StringBuilder errorResponse = new StringBuilder();
+        if (!FighterChecker.nameAndSurnameIsValid(fighterToAdd.getName(), fighterToAdd.getSurname())) {
+            errorResponse.append("ERROR: Invalid fighter name and/or surname. Please make sure that fighter's name/surname is longer than 2 characters and doesn't contain numbers.\n");
+        }
+
+        if(!FighterChecker.nicknameIsValid(fighterToAdd.getNickname())){
+            errorResponse.append("ERROR: Invalid fighter nickname. Please make sure that fighter's nickname is longer than 2 characters and isn't numeric only.\n");
+        }
+        if (InputChecker.fighterNicknameIsTaken(fighterToAdd.getNickname(), allFighters)) {
+            errorResponse.append("PROBLEM: Nickname " + fighterToAdd.getNickname() + " is already taken. Please try with a different nickname.\n");
+        }
+
+        if(FighterChecker.fighterAgeIsValid(fighterToAdd.getDateOfBirth())){
+            if (FighterChecker.fighterIsAMinor(fighterToAdd.getDateOfBirth())) {
+                errorResponse.append("PROBLEM: Minors can not compete in professional MMA organizations.\n");
+            }
+        }else{
+            errorResponse.append("ERROR: Invalid fighter age input. Age of the fighter can not be zero or less.");
+        }
+
+        if (!FighterChecker.weightIsValid(fighterToAdd.getWeightInKg())) {
+            errorResponse.append("ERROR: Weight input is not valid. Please make sure fighter's weight makes sense.\n");
+        }
+        if (!FighterChecker.heightIsValid(fighterToAdd.getHeightInCm())) {
+            errorResponse.append("ERROR: Height input is not valid. Please make sure fighter's height makes sense.\n");
+        }
+        if (!errorResponse.isEmpty()) {
+            return errorResponse;
+        }
         fighterRepository.save(fighterToAdd);
-        return "Fighter successfully added:\n " + fighterToAdd;
+        return new StringBuilder("Fighter successfully added:\n " + fighterToAdd);
     }
 
     public List<FighterDTO> getAllFighters(){

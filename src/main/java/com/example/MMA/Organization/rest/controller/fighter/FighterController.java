@@ -22,7 +22,7 @@ public class FighterController {
     }
 
     @PostMapping
-    public String addNewFighter(@RequestBody Fighter fighterToAdd){
+    public StringBuilder addNewFighter(@RequestBody Fighter fighterToAdd){
         return fighterService.addNewFighter(fighterToAdd);
     }
 
