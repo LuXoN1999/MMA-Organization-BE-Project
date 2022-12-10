@@ -36,8 +36,13 @@ public class FighterService {
         List<Fighter> allFighters = fighterRepository.findAll();
 
         StringBuilder errorResponse = new StringBuilder();
-        if (!FighterChecker.nameAndSurnameIsValid(fighterToAdd.getName(), fighterToAdd.getSurname())) {
-            errorResponse.append("ERROR: Invalid fighter name and/or surname. Please make sure that fighter's name/surname is longer than 2 characters and doesn't contain numbers.\n");
+
+        if(!FighterChecker.nameIsValid(fighterToAdd.getName())){
+            errorResponse.append("ERROR: Invalid fighter name. Please make sure that the fighter name is longer than 1 characters and doesn't contain numbers.\n");
+        }
+
+        if(!FighterChecker.surnameIsValid(fighterToAdd.getSurname())){
+            errorResponse.append("ERROR: Invalid fighter surname. Please make sure that the fighter surname is longer than 1 characters and isn't numeric only.\n");
         }
 
         if(!FighterChecker.nicknameIsValid(fighterToAdd.getNickname())){
