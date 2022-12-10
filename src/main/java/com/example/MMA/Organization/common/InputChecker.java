@@ -9,6 +9,15 @@ import java.util.Objects;
 
 public class InputChecker {
 
+    public static boolean allRequestParametersAreNull(List<Object> parameters){
+        for(Object parameter: parameters){
+            if(parameter != null){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean divisionNameIsTaken(String name, List<Division> allDivisions){
         for(Division element: allDivisions){
             if(Objects.equals(element.getName(),name)){
