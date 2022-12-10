@@ -7,13 +7,12 @@ import java.time.LocalDate;
 
 
 public class FighterChecker {
-    public static boolean nameAndSurnameIsValid(@NonNull String name, @NonNull String surname){
-            return name.length() >= 2
-                    && !nameContainsNumbers(name)
-                    && !NumberUtils.isParsable(name)
-                    && surname.length() >= 2
-                    && !nameContainsNumbers(surname)
-                    && !NumberUtils.isParsable(surname);
+    public static boolean nameIsValid(@NonNull String name){
+            return name.length() >= 2 && !nameContainsNumbers(name);
+    }
+
+    public static boolean surnameIsValid(@NonNull String surname){
+        return surname.length() >= 2 && !nameContainsNumbers(surname);
     }
 
     private static boolean nameContainsNumbers(String name){
