@@ -8,11 +8,11 @@ import java.time.LocalDate;
 
 public class FighterChecker {
     public static boolean nameIsValid(@NonNull String name){
-            return name.length() >= 2 && !nameContainsNumbers(name);
+            return name.length() > 1 && !nameContainsNumbers(name);
     }
 
     public static boolean surnameIsValid(@NonNull String surname){
-        return surname.length() >= 2 && !nameContainsNumbers(surname);
+        return surname.length() > 1 && !nameContainsNumbers(surname);
     }
 
     private static boolean nameContainsNumbers(String name){
