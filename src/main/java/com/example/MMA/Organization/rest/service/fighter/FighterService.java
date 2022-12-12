@@ -38,15 +38,15 @@ public class FighterService {
         StringBuilder errorResponse = new StringBuilder();
 
         if(!FighterChecker.nameIsValid(fighterToAdd.getName())){
-            errorResponse.append("ERROR: Invalid fighter name. Please make sure that the fighter name is longer than 1 characters and doesn't contain numbers.\n");
+            errorResponse.append("ERROR: Invalid fighter name. Please make sure that the fighter name is at least 2 characters long and doesn't contain numbers.\n");
         }
 
         if(!FighterChecker.surnameIsValid(fighterToAdd.getSurname())){
-            errorResponse.append("ERROR: Invalid fighter surname. Please make sure that the fighter surname is longer than 1 characters and isn't numeric only.\n");
+            errorResponse.append("ERROR: Invalid fighter surname. Please make sure that the fighter surname is at least 2 characters long and doesn't contain numbers.\n");
         }
 
         if(!FighterChecker.nicknameIsValid(fighterToAdd.getNickname())){
-            errorResponse.append("ERROR: Invalid fighter nickname. Please make sure that fighter's nickname is longer than 2 characters and isn't numeric only.\n");
+            errorResponse.append("ERROR: Invalid fighter nickname. Please make sure that fighter's nickname is at least 2 characters long and isn't numeric only.\n");
         }
         if (InputChecker.fighterNicknameIsTaken(fighterToAdd.getNickname(), allFighters)) {
             errorResponse.append("PROBLEM: Nickname " + fighterToAdd.getNickname() + " is already taken. Please try with a different nickname.\n");
@@ -63,12 +63,15 @@ public class FighterService {
         if (!FighterChecker.weightIsValid(fighterToAdd.getWeightInKg())) {
             errorResponse.append("ERROR: Weight input is not valid. Please make sure fighter's weight makes sense.\n");
         }
+
         if (!FighterChecker.heightIsValid(fighterToAdd.getHeightInCm())) {
             errorResponse.append("ERROR: Height input is not valid. Please make sure fighter's height makes sense.\n");
         }
+
         if (!errorResponse.isEmpty()) {
             return errorResponse;
         }
+
         fighterRepository.save(fighterToAdd);
         return new StringBuilder("Fighter successfully added:\n " + fighterToAdd);
     }
