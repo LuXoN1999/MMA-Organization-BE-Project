@@ -37,7 +37,7 @@ public class FighterController {
     }
 
     @PutMapping(path = "/{fighterId}")
-    public String updateFighter(@PathVariable("fighterId") Long fighterId,
+    public StringBuilder updateFighter(@PathVariable("fighterId") Long fighterId,
                               @RequestParam (required = false) String newName,
                               @RequestParam (required = false) String newSurname,
                               @RequestParam (required = false) String newNickname,

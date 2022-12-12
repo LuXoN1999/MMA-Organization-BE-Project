@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -95,7 +95,7 @@ public class FighterService {
 
 
     @Transactional
-    public String updateFighter(Long fighterId,
+    public StringBuilder updateFighter(Long fighterId,
                               String newName,
                               String newSurname,
                               String newNickname,
@@ -103,10 +103,22 @@ public class FighterService {
                               String newNationality,
                               Double newWeightInKg,
                               Double newHeightInCm
-                              ){
+                              )
+    {
+
+        List<Object> requestParams = Arrays.asList(newName, newSurname, newNickname, newDateOfBirth, newNationality, newWeightInKg, newHeightInCm);
+        if(InputChecker.allRequestParametersAreNull(requestParams)){
+            return new StringBuilder("No request parameters passed.");
+        }
+
         boolean fighterExists = fighterRepository.existsById(fighterId);
         if(fighterExists) {
+            StringBuilder errorResponse = new StringBuilder();
+            StringBuilder successResponse = new StringBuilder("Division with id " + fighterId + " successfully updated.\n");
+
             Fighter chosenFighter = fighterRepository.findById(fighterId).get();
+            List<Fighter> restOfFighters = fighterRepository.getAllFightersExceptSpecified(fighterId);
+
             String oldName = chosenFighter.getName();
             String oldSurname = chosenFighter.getSurname();
             String oldNickname = chosenFighter.getNickname();
@@ -114,37 +126,78 @@ public class FighterService {
             String oldNationality = chosenFighter.getNationality();
             Double oldWeightInKg = chosenFighter.getWeightInKg();
             Double oldHeightInCm = chosenFighter.getHeightInCm();
-            if (newName != null && newName.length() > 0 && !Objects.equals(chosenFighter.getName(), newName)) {
-                chosenFighter.setName(newName);
+
+            if(newName != null){
+                if(FighterChecker.nameIsValid(newName)){
+                    chosenFighter.setName(newName);
+                    successResponse.append("\tName: [" + oldName + "] -> [" + newName + "]\n");
+                } else{
+                    errorResponse.append("ERROR: Invalid fighter name. Please make sure that the fighter name is at least 2 characters long and doesn't contain numbers.\n");                }
             }
-            if (newSurname != null && newSurname.length() > 0 && !Objects.equals(chosenFighter.getSurname(), newSurname)) {
-                chosenFighter.setSurname(newSurname);
+
+            if(newSurname != null){
+                if(FighterChecker.surnameIsValid(newSurname)){
+                    chosenFighter.setSurname(newSurname);
+                    successResponse.append("\tSurname: [" + oldSurname + "] -> [" + newSurname + "]\n");
+                } else{
+                    errorResponse.append("ERROR: Invalid fighter surname. Please make sure that the fighter surname is at least 2 characters long and doesn't contain numbers.\n");                }
             }
-            if (newNickname != null && newNickname.length() > 0 && !Objects.equals(chosenFighter.getNickname(), newNickname)) {
-                chosenFighter.setNickname(newNickname);
+
+            if(newNickname != null) {
+                if (FighterChecker.nicknameIsValid(newNickname)) {
+                    if (!InputChecker.fighterNicknameIsTaken(newNickname, restOfFighters)) {
+                        chosenFighter.setNickname(newNickname);
+                        successResponse.append("\tNickname: [" + oldNickname + "] -> [" + newNickname + "]\n");
+                    } else {
+                        errorResponse.append("PROBLEM: Nickname " + newNickname + " is already taken. Please try with a different nickname.\n");
+                    }
+                } else {
+                    errorResponse.append("ERROR: Invalid fighter nickname. Please make sure that fighter's nickname is at least 2 characters long and isn't numeric only.\n");
+                }
             }
-            if (newDateOfBirth != null && !Objects.equals(chosenFighter.getDateOfBirth(), newDateOfBirth)) {
-                chosenFighter.setDateOfBirth(newDateOfBirth);
+
+            if(newDateOfBirth != null){
+                if(FighterChecker.fighterAgeIsValid(newDateOfBirth)){
+                    if(!FighterChecker.fighterIsAMinor(newDateOfBirth)){
+                        chosenFighter.setDateOfBirth(newDateOfBirth);
+                        successResponse.append("\tDate of Birth: [" + oldDateOfBirth + "] -> [" + newDateOfBirth + "]\n");
+                    } else{
+                        errorResponse.append("PROBLEM: Minors can not compete in professional MMA organizations.\n");
+                    }
+                } else{
+                    errorResponse.append("ERROR: Invalid fighter age input. Age of the fighter can not be zero or less.");
+                }
             }
-            if (newNationality != null && newNationality.length() > 0 && !Objects.equals(chosenFighter.getNationality(), newNationality)) {
+
+            if(newNationality != null){
                 chosenFighter.setNationality(newNationality);
+                successResponse.append("\tNationality: [" + oldNationality + "] -> [" + newNationality + "]\n");
             }
-            if (newWeightInKg != null && newWeightInKg > 0) {
-                chosenFighter.setWeightInKg(newWeightInKg);
+
+            if(newWeightInKg != null){
+                if(FighterChecker.weightIsValid(newWeightInKg)){
+                    chosenFighter.setWeightInKg(newWeightInKg);
+                    successResponse.append( "\tWeight(kg): [" + oldWeightInKg + "] -> [" + newWeightInKg + "]\n");
+                } else{
+                    errorResponse.append("ERROR: Weight input is not valid. Please make sure fighter's weight makes sense.\n");
+                }
             }
-            if (newHeightInCm != null && newHeightInCm > 0) {
-                chosenFighter.setHeightInCm(newHeightInCm);
+
+            if(newHeightInCm != null){
+                if(FighterChecker.heightIsValid(newHeightInCm)){
+                    chosenFighter.setHeightInCm(newHeightInCm);
+                    successResponse.append("\tHeight(cm): [" + oldHeightInCm + "] -> [" + newHeightInCm + "]");
+                } else{
+                    errorResponse.append("ERROR: Height input is not valid. Please make sure fighter's height makes sense.\n");
+                }
             }
-            return "Fighter with id " + fighterId + " successfully updated.\n" +
-                    "\tName: [" + oldName + "] -> [" + newName + "]\n" +
-                    "\tSurname: [" + oldSurname + "] -> [" + newSurname + "]\n" +
-                    "\tNickname: [" + oldNickname + "] -> [" + newNickname + "]\n" +
-                    "\tDate of Birth: [" + oldDateOfBirth + "] -> [" + newDateOfBirth + "]\n" +
-                    "\tNationality: [" + oldNationality + "] -> [" + newNationality + "]\n" +
-                    "\tWeight(kg): [" + oldWeightInKg + "] -> [" + newWeightInKg + "]\n" +
-                    "\tHeight(cm): [" + oldHeightInCm + "] -> [" + newHeightInCm + "]";
+
+            if(errorResponse.length() != 0){
+                return errorResponse;
+            }
+            return successResponse;
         }
-        return "Fighter with id " + fighterId + " does not exist!";
+        return new StringBuilder("Fighter with id " + fighterId + " does not exist!");
     }
 
     @Transactional
