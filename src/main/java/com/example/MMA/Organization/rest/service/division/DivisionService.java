@@ -62,7 +62,7 @@ public class DivisionService {
     public List<DivisionDTO> getAllDivisions() {
         return divisionRepository.findAll()
                 .stream()
-                .map(element -> divisionMapper.toDTO(element))
+                .map(divisionMapper::toDTO)
                 .collect(Collectors.toList());
     }
 

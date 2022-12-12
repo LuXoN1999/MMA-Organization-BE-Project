@@ -79,7 +79,7 @@ public class FighterService {
     public List<FighterDTO> getAllFighters(){
         return fighterRepository.findAll()
                 .stream()
-                .map(element -> fighterMapper.toDTO(element))
+                .map(fighterMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
