@@ -55,11 +55,11 @@ public class FighterController {
     }
 
     @PutMapping(path = "/{fighterId}/division/{divisionId}")
-    public void addFighterToDivision(
+    public StringBuilder addFighterToDivision(
             @PathVariable Long divisionId,
             @PathVariable Long fighterId
     ) {
-        fighterService.addFighterToDivision(divisionId,fighterId);
+        return fighterService.addFighterToDivision(divisionId,fighterId);
     }
 
 

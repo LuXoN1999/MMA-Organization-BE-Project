@@ -201,13 +201,19 @@ public class FighterService {
     }
 
     @Transactional
-    public void addFighterToDivision(Long divisionId,Long fighterId){
+    public StringBuilder addFighterToDivision(Long divisionId,Long fighterId){
         boolean divisionExists = divisionRepository.existsById(divisionId);
         boolean fighterExists = fighterRepository.existsById(fighterId);
         if(divisionExists && fighterExists){
             Division chosenDivision = divisionRepository.findById(divisionId).get();
             Fighter chosenFighter = fighterRepository.findById(fighterId).get();
-            chosenFighter.assignDivision(chosenDivision);
+            if(chosenDivision.getCurrentNumberOfFighters() < chosenDivision.getMaxNumberOfFighters()){
+                chosenFighter.assignDivision(chosenDivision);
+                return new StringBuilder("Fighter with id " + fighterId + " [" + chosenFighter.getName() + " " + chosenFighter.getSurname() +
+                        "] added to division with id " + divisionId + " [" + chosenDivision.getName() + "].");
+            }
+            return new StringBuilder("PROBLEM: Division is full.");
         }
+        return new StringBuilder("ERROR: Given division or fighter do not exist.");
     }
 }
