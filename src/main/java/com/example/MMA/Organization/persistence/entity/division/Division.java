@@ -111,6 +111,10 @@ public class Division {
         return fighters;
     }
 
+    public Integer getCurrentNumberOfFighters(){
+        return fighters.size();
+    }
+
     @Override
     public String toString() {
         return "{\n" +
