@@ -143,8 +143,12 @@ public class DivisionService {
 
             if(newMaxNumberOfFighters != null){
                 if(DivisionChecker.maxNumberOfFightersIsValid(newMaxNumberOfFighters)) {
-                    chosenDivision.setMaxNumberOfFighters(newMaxNumberOfFighters);
-                    successResponse.append("\tMaxNumberOfFighters: [" + oldMaxNumberOfFighters + "] -> [" + newMaxNumberOfFighters + "]");
+                    if(!(chosenDivision.getCurrentNumberOfFighters() > newMaxNumberOfFighters)){
+                        chosenDivision.setMaxNumberOfFighters(newMaxNumberOfFighters);
+                        successResponse.append("\tMaxNumberOfFighters: [" + oldMaxNumberOfFighters + "] -> [" + newMaxNumberOfFighters + "]");
+                    } else{
+                        errorResponse.append("ERROR: New max. number of fighters is smaller than the number of fighters currently active in the division(" + chosenDivision.getCurrentNumberOfFighters() + ").");
+                    }
                 } else{
                     errorResponse.append("ERROR: Invalid max. number of fighters input. Please make sure the max. number of fighters input makes sense.\n");
                 }
