@@ -89,6 +89,7 @@ public class FighterService {
     public String deleteFighter(Long fighterId){
         boolean fighterExists = fighterRepository.existsById(fighterId);
         if(fighterExists){
+            fighterRepository.findById(fighterId).get().leaveDivision();
             fighterRepository.deleteById(fighterId);
             return "Fighter with id "+ fighterId + " successfully deleted.";
         }
