@@ -72,6 +72,8 @@ public class FighterService {
             return errorResponse;
         }
 
+        Division assignedDivision = FighterChecker.findDivisionByWeight(fighterToAdd.getWeightInKg(),divisionRepository.findAll());
+        fighterToAdd.assignDivision(assignedDivision);
         fighterRepository.save(fighterToAdd);
         return new StringBuilder("Fighter successfully added:\n " + fighterToAdd);
     }
@@ -87,6 +89,7 @@ public class FighterService {
     public String deleteFighter(Long fighterId){
         boolean fighterExists = fighterRepository.existsById(fighterId);
         if(fighterExists){
+            fighterRepository.findById(fighterId).get().leaveDivision();
             fighterRepository.deleteById(fighterId);
             return "Fighter with id "+ fighterId + " successfully deleted.";
         }
@@ -114,7 +117,7 @@ public class FighterService {
         boolean fighterExists = fighterRepository.existsById(fighterId);
         if(fighterExists) {
             StringBuilder errorResponse = new StringBuilder();
-            StringBuilder successResponse = new StringBuilder("Division with id " + fighterId + " successfully updated.\n");
+            StringBuilder successResponse = new StringBuilder("Fighter with id " + fighterId + " successfully updated.\n");
 
             Fighter chosenFighter = fighterRepository.findById(fighterId).get();
             List<Fighter> restOfFighters = fighterRepository.getAllFightersExceptSpecified(fighterId);
@@ -177,6 +180,22 @@ public class FighterService {
             if(newWeightInKg != null){
                 if(FighterChecker.weightIsValid(newWeightInKg)){
                     chosenFighter.setWeightInKg(newWeightInKg);
+                    Division currentDivision = chosenFighter.getDivision();
+                    Division assignedDivision = FighterChecker.findDivisionByWeight(newWeightInKg,divisionRepository.findAll());
+                    if(currentDivision == null){
+                        if(assignedDivision != null){
+                            chosenFighter.assignDivision(assignedDivision);
+                            successResponse.append("Fighter entered " + assignedDivision.getName() + " division.");
+                        }
+                    } else {
+                        if(assignedDivision != null){
+                            chosenFighter.assignDivision(assignedDivision);
+                            successResponse.append("\tDivision: [" + currentDivision.getName() + "] -> [" + assignedDivision.getName() + "]\n");
+                        } else{
+                            chosenFighter.leaveDivision();
+                            successResponse.append("\tFighter left " + currentDivision.getName() + " division and did not enter any other division.\n");
+                        }
+                    }
                     successResponse.append( "\tWeight(kg): [" + oldWeightInKg + "] -> [" + newWeightInKg + "]\n");
                 } else{
                     errorResponse.append("ERROR: Weight input is not valid. Please make sure fighter's weight makes sense.\n");

@@ -1,9 +1,12 @@
 package com.example.MMA.Organization.common;
 
+import com.example.MMA.Organization.persistence.entity.division.Division;
+import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 public class FighterChecker {
@@ -43,6 +46,19 @@ public class FighterChecker {
 
     public static boolean heightIsValid(@NonNull Double height){
         return height > 0 && !Double.isNaN(height);
+    }
+
+    public static Division findDivisionByWeight(@NonNull Double weight, List<Division> allDivisions){
+        if(allDivisions == null){
+            return null;
+        }
+        for(Division division : allDivisions) {
+            Range<Double> divisionWeightRange = Range.between(division.getMinWeight(), division.getMaxWeight());
+            if (divisionWeightRange.contains(weight)) {
+                return division;
+            }
+        }
+        return null;
     }
 
 }
