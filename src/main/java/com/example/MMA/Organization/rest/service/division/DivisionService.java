@@ -2,9 +2,11 @@ package com.example.MMA.Organization.rest.service.division;
 
 import com.example.MMA.Organization.common.DivisionChecker;
 import com.example.MMA.Organization.common.InputChecker;
+import com.example.MMA.Organization.common.OrganizationUpdater;
 import com.example.MMA.Organization.persistence.entity.division.Division;
 import com.example.MMA.Organization.persistence.entity.fighter.Fighter;
 import com.example.MMA.Organization.persistence.repository.division.DivisionRepository;
+import com.example.MMA.Organization.persistence.repository.fighter.FighterRepository;
 import com.example.MMA.Organization.rest.dto.division.DivisionDTO;
 import com.example.MMA.Organization.rest.dto.division.DivisionMapperImpl;
 
@@ -20,15 +22,19 @@ public class DivisionService {
 
     private final DivisionRepository divisionRepository;
 
+    private final FighterRepository fighterRepository;
+
     private final DivisionMapperImpl divisionMapper;
 
     @Autowired
-    public DivisionService(DivisionRepository divisionRepository, DivisionMapperImpl divisionMapper) {
+    public DivisionService(DivisionRepository divisionRepository, FighterRepository fighterRepository, DivisionMapperImpl divisionMapper) {
         this.divisionRepository = divisionRepository;
+        this.fighterRepository = fighterRepository;
         this.divisionMapper = divisionMapper;
     }
 
 
+    @Transactional
     public StringBuilder addNewDivision(Division divisionToAdd) {
         StringBuilder errorResponse = new StringBuilder();
         if (!DivisionChecker.nameIsValid(divisionToAdd.getName())) {
@@ -56,6 +62,7 @@ public class DivisionService {
             return errorResponse;
         }
         divisionRepository.save(divisionToAdd);
+        OrganizationUpdater.sortOutFightersByDivision(divisionRepository.findAll(),fighterRepository.findAll());
         return new StringBuilder("Division successfully added:\n " + divisionToAdd);
     }
 
@@ -158,6 +165,7 @@ public class DivisionService {
                 return errorResponse;
             }
 
+            OrganizationUpdater.sortOutFightersByDivision(divisionRepository.findAll(),fighterRepository.findAll());
             return successResponse;
 
         } else {
